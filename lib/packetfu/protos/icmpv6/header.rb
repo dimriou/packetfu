@@ -16,7 +16,8 @@ module PacketFu
   #   Int8    :icmp_code                        # Code
   #   Int16   :icmp_sum    Default: calculated  # Checksum
   #   String  :body
-  class ICMPv6Header < Struct.new(:icmpv6_type, :icmpv6_code, :icmpv6_sum, :body)
+  class ICMPv6Header < Struct.new(:icmpv6_type, :icmpv6_code, :icmpv6_sum,
+                                    :icmpv6_reserved, :body)
     include StructFu
 
     PROTOCOL_NUMBER = 58
@@ -26,6 +27,7 @@ module PacketFu
         Int8.new(args[:icmpv6_type]),
         Int8.new(args[:icmpv6_code]),
         Int16.new(args[:icmpv6_sum]),
+        Int32.new(args[:icmpv6_reserved]),
         StructFu::String.new.read(args[:body])
       )
     end
@@ -59,8 +61,11 @@ module PacketFu
     def icmpv6_sum=(i); typecast i; end
     # Getter for the checksum.
     def icmpv6_sum; self[:icmpv6_sum].to_i; end
+    # Setter for the reserved.
+    def icmpv6_reserved=(i); typecast i; end
+    # Getter for the reserved.
+    def icmpv6_reserved; self[:icmpv6_reserved].to_i; end
 
-    def icmpv6_sum_readable
       "0x%04x" % icmpv6_sum
     end
       

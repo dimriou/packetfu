@@ -9,6 +9,8 @@ module PacketFu
     def icmpv6_code; self.icmpv6_header.icmpv6_code; end
     def icmpv6_sum=(v); self.icmpv6_header.icmpv6_sum= v; end
     def icmpv6_sum; self.icmpv6_header.icmpv6_sum; end
+    def icmpv6_reserved=(v); self.icmpv6_header.icmpv6_reserved= v; end
+    def icmpv6_reserved; self.icmpv6_header.icmpv6_reserved; end
     def icmpv6_sum_readable; self.icmpv6_header.icmpv6_sum_readable; end
   end
 end
