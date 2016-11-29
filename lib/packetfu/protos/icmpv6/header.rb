@@ -17,7 +17,7 @@ module PacketFu
   #   Int16   :icmp_sum    Default: calculated  # Checksum
   #   String  :body
   class ICMPv6Header < Struct.new(:icmpv6_type, :icmpv6_code, :icmpv6_sum,
-                                    :icmpv6_reserved, :body)
+                                    :icmpv6_reserved, :icmpv6_tgt, :body)
     include StructFu
 
     PROTOCOL_NUMBER = 58
@@ -28,6 +28,7 @@ module PacketFu
         Int8.new(args[:icmpv6_code]),
         Int16.new(args[:icmpv6_sum]),
         Int32.new(args[:icmpv6_reserved]),
+        AddrIpv6.new.read(args[:icmpv6_tgt] || ("\x00" * 16)),
         StructFu::String.new.read(args[:body])
       )
     end
@@ -65,10 +66,26 @@ module PacketFu
     def icmpv6_reserved=(i); typecast i; end
     # Getter for the reserved.
     def icmpv6_reserved; self[:icmpv6_reserved].to_i; end
+    # Setter for the target address.
+    def icmpv6_tgt=(i); typecast i; end
+    # Getter for the target address.
+    def icmpv6_tgt; self[:icmpv6_tgt].to_i; end
 
+    def icmpv6_sum_readable
       "0x%04x" % icmpv6_sum
     end
-      
-  end
 
+    # Get target address in a more readable form.
+    def icmpv6_taddr
+        self[:icmpv6_tgt].to_x
+    end
+
+    # Set the target address in a more readable form.
+    def icmpv6_taddr=(str)
+        self[:icmpv6_tgt].read_x(str)
+    end
+
+    alias :icmpv6_tgt_readable :icmpv6_taddr
+
+  end
 end
