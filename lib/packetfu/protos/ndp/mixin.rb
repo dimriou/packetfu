@@ -26,5 +26,6 @@ module PacketFu
     def ndp_lla_readable; self.ndp_header.ndp_lla_readable; end
     def ndp_tgt_readable; self.ndp_header.ndp_tgt_readable; end
     def ndp_sum_readable; self.ndp_header.ndp_sum_readable; end
+    def ndp_set_flags=(v); self.ndp_header.ndp_set_flags= v; end
   end
 end
