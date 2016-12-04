@@ -121,13 +121,22 @@ module PacketFu
         EthHeader.str2mac(self[:ndp_lla].to_s)
     end
 
+    def ndp_mock
+       self.ndp_type = 136
+       self.ndp_taddr = "fe80::2"
+       self.ndp_opt_type = 2
+       self.ndp_opt_len = 1
+    end
+
+
+
     # Set flag bits (First three are flag bits, the rest are reserved).
     def ndp_set_flags=(bits)
         case bits
         when "000"
             self.ndp_reserved = 0x00000000
         when "001"
-            self.ndp_reserved = 0x20000000                          # 536870912
+            self.ndp_reserved = 0x20000000
         when "010"
             self.ndp_reserved = 0x40000000
         when "011"
