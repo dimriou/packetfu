@@ -96,7 +96,7 @@ module PacketFu
     # Setter for the link local address.
     def ndp_lla=(i); typecast i; end
     # Getter for the link local address.
-    def ndp_lla; self[:ndp_lla].to_i; end
+    def ndp_lla; self[:ndp_lla].to_s; end
 
 
     # Get target address in a more readable form.
