@@ -58,6 +58,7 @@ module PacketFu
 
     # Recalculates the calculatable fields for NDP.
     def ndp_recalc(arg=:all)
+      arg = arg.intern if arg.respond_to? :intern
       case arg
       when :ndp_sum
         self.ndp_sum = ndp_calc_sum
