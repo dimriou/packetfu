@@ -16,6 +16,14 @@ module PacketFu
 
     attr_accessor :eth_header, :ipv6_header, :ndp_header
 
+    def self.can_parse?(str)
+      return false unless str.size >= 58
+      return false unless EthPacket.can_parse? str
+      return false unless IPv6Packet.can_parse? str
+      return false unless str[20,1] == [PacketFu::NDPHeader::PROTOCOL_NUMBER].pack('C')
+      return true
+    end
+
     def initialize(args={})
       @eth_header = EthHeader.new(args).read(args[:eth])
       @ipv6_header = IPv6Header.new(args).read(args[:ipv6])
