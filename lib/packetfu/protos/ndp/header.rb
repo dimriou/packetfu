@@ -1,3 +1,6 @@
+require 'packetfu/protos/ipv6/header'
+require 'packetfu/protos/ipv6/mixin'
+
 module PacketFu
 
   # NeighborDiscoveryHeader is a complete ICMPv6 struct, used in
