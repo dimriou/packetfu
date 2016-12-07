@@ -56,6 +56,18 @@ module PacketFu
 
     end
 
+    # Recalculates the calculatable fields for NDP.
+    def ndp_recalc(arg=:all)
+      case arg
+      when :ndp_sum
+        self.ndp_sum = ndp_calc_sum
+      when :all
+        self.ndp_sum = ndp_calc_sum
+      else
+        raise ArgumentError, "No such field `#{arg}'"
+      end
+    end
+
   end
 
 end
