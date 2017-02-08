@@ -16,7 +16,9 @@ module PacketFu
   #   Int8    :icmp_code                        # Code
   #   Int16   :icmp_sum    Default: calculated  # Checksum
   #   String  :body
-  class ICMPv6Header < Struct.new(:icmpv6_type, :icmpv6_code, :icmpv6_sum, :body)
+  class ICMPv6Header < Struct.new(:icmpv6_type, :icmpv6_code, :icmpv6_sum,
+                                    :icmpv6_reserved, :icmpv6_tgt, :icmpv6_opt_type,
+                                    :icmpv6_opt_len, :icmpv6_lla, :body)
     include StructFu
 
     PROTOCOL_NUMBER = 58
@@ -26,6 +28,11 @@ module PacketFu
         Int8.new(args[:icmpv6_type]),
         Int8.new(args[:icmpv6_code]),
         Int16.new(args[:icmpv6_sum]),
+        Int32.new(args[:icmpv6_reserved]),
+        AddrIpv6.new.read(args[:icmpv6_tgt] || ("\x00" * 16)),
+        Int8.new(args[:icmpv6_opt_type]),
+        Int8.new(args[:icmpv6_opt_len]),
+        EthMac.new.read(args[:icmpv6_lla]),
         StructFu::String.new.read(args[:body])
       )
     end
@@ -59,11 +66,55 @@ module PacketFu
     def icmpv6_sum=(i); typecast i; end
     # Getter for the checksum.
     def icmpv6_sum; self[:icmpv6_sum].to_i; end
+    # Setter for the reserved.
+    def icmpv6_reserved=(i); typecast i; end
+    # Getter for the reserved.
+    def icmpv6_reserved; self[:icmpv6_reserved].to_i; end
+    # Setter for the target address.
+    def icmpv6_tgt=(i); typecast i; end
+    # Getter for the target address.
+    def icmpv6_tgt; self[:icmpv6_tgt].to_i; end
+    # Setter for the options type field.
+    def icmpv6_opt_type=(i); typecast i; end
+    # Getter for the options type field.
+    def icmpv6_opt_type; self[:icmpv6_opt_type].to_i; end
+    # Setter for the options length.
+    def icmpv6_opt_len=(i); typecast i; end
+    # Getter for the options length.
+    def icmpv6_opt_len; self[:icmpv6_opt_len].to_i; end
+    # Setter for the link local address.
+    def icmpv6_lla=(i); typecast i; end
+    # Getter for the link local address.
+    def icmpv6_lla; self[:icmpv6_lla].to_i; end
 
     def icmpv6_sum_readable
       "0x%04x" % icmpv6_sum
     end
-      
-  end
 
+    # Get target address in a more readable form.
+    def icmpv6_taddr
+        self[:icmpv6_tgt].to_x
+    end
+
+    # Set the target address in a more readable form.
+    def icmpv6_taddr=(str)
+        self[:icmpv6_tgt].read_x(str)
+    end
+
+     # Sets the link local address in a more readable way.
+    def icmpv6_lladdr=(mac)
+        mac = EthHeader.mac2str(mac)
+        self[:icmpv6_lla].read mac
+        self[:icmpv6_lla]
+    end
+
+    # Gets the link local address in a more readable way.
+    def icmpv6_lladdr
+        EthHeader.str2mac(self[:icmpv6_lla].to_s)
+    end
+
+    alias :icmpv6_lla_readable :icmpv6_lladdr
+    alias :icmpv6_tgt_readable :icmpv6_taddr
+
+  end
 end
